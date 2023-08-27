@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.librarymanagement.controller.*;
-import com.librarymanagement.exceptions.*;
+import com.librarymanagement.exceptions.BookNamePresentException;
+import com.librarymanagement.exceptions.EmptyFieldException;
 
 /**
  * This class serves as a global exception handler for the library application.
@@ -23,7 +23,7 @@ import com.librarymanagement.exceptions.*;
  */
 @ControllerAdvice
 public class LibraryControllerAdvice extends ResponseEntityExceptionHandler {
-	private static final Logger logger = LoggerFactory.getLogger(LibraryController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LibraryControllerAdvice.class);
 
 	/**
 	 * Handles the EmptyFieldException by returning an appropriate error response.
@@ -49,6 +49,12 @@ public class LibraryControllerAdvice extends ResponseEntityExceptionHandler {
 		logger.error("A no such element exception occurred: {}", noSuchElementException.getMessage());
 		return new ResponseEntity<String>("No value is present in DB,Please change your request", HttpStatus.NOT_FOUND);
 	}
+	
+	@ExceptionHandler(BookNamePresentException.class)
+	public ResponseEntity<String> handleBookNamePresentException(BookNamePresentException bookNamePresentException) {
+		logger.error("Already Present Exception occurred: {}",bookNamePresentException.getMessage());
+		return new ResponseEntity<String>("book name already present", HttpStatus.NOT_FOUND);
+	}
 
 	/**
 	 * Handles the HttpRequestMethodNotSupportedException by returning an
@@ -66,5 +72,7 @@ public class LibraryControllerAdvice extends ResponseEntityExceptionHandler {
 		logger.error("HTTP request method not supported: {}", ex.getMessage());
 		return new ResponseEntity<Object>("Please,change your HTTP method type", HttpStatus.NOT_FOUND);
 	}
+	
+	
 
 }

@@ -55,11 +55,12 @@ public class LibraryServiceImpl implements LibraryService {
 	}
 
 	/**
-	 * Adds a new book to the system.
+	 * Service method to add a new book.
 	 *
-	 * @param book The book to be added.
-	 * @return The added book.
-	 * @throws NotFoundException if the associated category is not found.
+	 * @param book The book object to be added.
+	 * @return The newly added book.
+	 * @throws NotFoundException        If the specified category is not found.
+	 * @throws BookNamePresentException If a book with the same name already exists.
 	 */
 	@Transactional
 	public Book addNewBook(Book book) {
@@ -67,6 +68,15 @@ public class LibraryServiceImpl implements LibraryService {
 		// Logic to associate the book with an existing category
 		Category category = categoryRepository.findById(book.getCategoryId())
 				.orElseThrow(() -> new NotFoundException("Category not found "));
+		// Logic to check if book name already exists or not
+		/*
+		 * List<Book> existingBook = bookRepository.findBookByName(book.getName()); if
+		 * (!existingBook.isEmpty()) { throw new BookNamePresentException(); }
+		 */
+		if (!bookRepository.findBookByName(book.getName()).isEmpty()) {
+			throw new BookNamePresentException();
+		}
+
 		book.setCategories(category);
 		Book addedBook = bookRepository.save(book);
 		logger.info("Added new book: " + addedBook.getName());
