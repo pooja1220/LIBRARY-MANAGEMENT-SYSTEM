@@ -1,0 +1,19 @@
+trigger:
+- main  # Runs the pipeline when changes are pushed to the main branch
+
+pool:
+  vmImage: 'ubuntu-latest'  # Specifies the agent to run the pipeline
+
+steps:
+- task: UseNode@1
+  inputs:
+    version: '16.x'  # Installs Node.js (for frontend projects, change as needed)
+
+- script: echo "Building the project..."
+  displayName: 'Build Step'  # Just a test step
+
+- script: echo "Testing the project..."
+  displayName: 'Test Step'
+
+- script: echo "Deploying the project..."
+  displayName: 'Deploy Step'
